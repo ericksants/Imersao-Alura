@@ -1,22 +1,35 @@
 const amigoSecreto = {
     adicionar() {
-        const nome = document.getElementById('nome-amigo');
+        const nomeEl = document.getElementById('nome-amigo');
         const listaSecreta = document.getElementById('lista-amigos');
-        if (nome.value == '') {
+        var nome = nomeEl.value.trim();
+        nome = nome.toUpperCase();
+        
+        if (nome == '') {
             alert('Por favor, insira um nome.');
+            return;
+        }
+
+        if (listaSecreta.innerText.split(', ').includes(nome)) {
+            alert('Esse nome já foi adicionado.');
+            nomeEl.value = '';
             return;
         }
         
         if (listaSecreta.innerText == '') {
-            listaSecreta.innerText = nome.value;
+            listaSecreta.innerText = nome;
         }else {
-            listaSecreta.innerText += ', ' + nome.value;
+            listaSecreta.innerText += ', ' + nome;
         }
-        nome.value = '';
+        nomeEl.value = '';
     },
     
     sortear() {
         const nomes = document.getElementById('lista-amigos').innerText.split(', ');
+        if (nomes.length < 4){
+            alert('É necessário ter no mínimo 4 amigos para sortear.');
+            return;
+        }
         const nomesEmbaralhados = nomes.sort(() => Math.random() - 0.5);        
         amigoSecreto.associarAmigo(nomesEmbaralhados);
     },
@@ -27,8 +40,9 @@ const amigoSecreto = {
             const amigo = nomesEmbaralhados[i];
             const amigoSorteado = nomesEmbaralhados[(i + 1) % nomesEmbaralhados.length];
             relacoes.push(`${amigo} -> ${amigoSorteado}`);
+
         }
-        document.getElementById('lista-sorteio').innerText = relacoes.join(', ');
+        document.getElementById('lista-sorteio').innerText = relacoes.join('\n');
     },
     
     reiniciar() {
