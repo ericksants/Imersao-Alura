@@ -1,11 +1,17 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:main/api_key.dart';
 
+StreamController<String> streamController = StreamController<String>();
 void main() {
-  print('Hello, World!');
-  // requestData();
-  // requestDataAsync();
+  StreamSubscription streamSubscription = streamController.stream.listen((
+    String info,
+  ) {
+    print('Event: $info');
+  });
+  requestDataAsync();
+  requestData();
   sendDataAsync({
     "id": "ID001NEW",
     "name": "Erick",
@@ -19,13 +25,7 @@ void requestData() {
       'https://gist.githubusercontent.com/ericksants/56161ef65fa6d4852b25fa244e31bddf/raw/b767d4d5db034a478c25036591426f3d082c9ed7/accounts.json';
   Future<Response> response = get(Uri.parse(url));
   response.then((Response response) {
-    print(response.body);
-    json.decode(response.body);
-    List<dynamic> listAccounts = json.decode(response.body);
-    Map<String, dynamic> account = listAccounts.firstWhere(
-      (element) => element["name"] == "Carla",
-    );
-    print(account['balance']);
+    streamController.add("${DateTime.now()} | Requisição com Future");
   });
 }
 
@@ -33,6 +33,7 @@ Future<List<dynamic>> requestDataAsync() async {
   String url =
       'https://gist.githubusercontent.com/ericksants/56161ef65fa6d4852b25fa244e31bddf/raw/b767d4d5db034a478c25036591426f3d082c9ed7/accounts.json';
   Response response = await get(Uri.parse(url));
+  streamController.add("${DateTime.now()} | Requisição Assíncrona");
   return json.decode(response.body);
 }
 
@@ -55,5 +56,13 @@ Future sendDataAsync(Map<String, dynamic> mapAccount) async {
     }),
   );
 
-  print(response.statusCode);
+  if (response.statusCode.toString()[0] == "2") {
+    streamController.add(
+      "${DateTime.now()} | Requisição adição bem sucedida (${mapAccount["name"]}).",
+    );
+  } else {
+    streamController.add(
+      "${DateTime.now()} | Requisição falhou (${mapAccount["name"]}).",
+    );
+  }
 }
