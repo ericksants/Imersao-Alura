@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:http/http.dart';
 import 'package:uuid/uuid.dart';
 import 'package:main/models/account.dart';
 import 'package:main/services/account_service.dart';
@@ -69,8 +70,20 @@ class AccountScreen {
   }
 
   Future<void> _getAllAccounts() async {
-    List<Account> listAccounts = await _accountService.getAll();
-    print(listAccounts);
+    try {
+      List<Account> listAccounts = await _accountService.getAll();
+      print(listAccounts);
+    } on ClientException catch (e) {
+      print("Não foi possivel conectar ao servidor.");
+      print("Tente novamente mais tarde.");
+      print(e.message);
+      print(e.uri);
+    } on Exception {
+      print("Erro ao obter contas.");
+      print("Tente novamente mais tarde.");
+    } finally {
+      print("${DateTime.now()} | Requisição de obtenção finalizada.");
+    }
   }
 
   Future<void> _searchByName() async {
