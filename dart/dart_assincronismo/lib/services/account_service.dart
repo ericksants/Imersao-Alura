@@ -29,6 +29,20 @@ class AccountService {
     return listAccounts;
   }
 
+  Future<List<Account>> getByName(String name) async {
+    if (name.trim().isEmpty) return [];
+    final List<Account> all = await getAll();
+    final query = name.toLowerCase();
+    return all.where((a) => a.name.toLowerCase().contains(query)).toList();
+  }
+
+  //teste local
+  static List<Account> filterByName(List<Account> accounts, String name) {
+    if (name.trim().isEmpty) return [];
+    final query = name.toLowerCase();
+    return accounts.where((a) => a.name.toLowerCase().contains(query)).toList();
+  }
+
   Future addAccount(Account account) async {
     List<Account> listAccounts = await getAll();
     listAccounts.add(account);
