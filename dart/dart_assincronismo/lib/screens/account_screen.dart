@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:http/http.dart';
 import 'package:uuid/uuid.dart';
 import 'package:main/models/account.dart';
 import 'package:main/services/account_service.dart';
@@ -112,6 +111,7 @@ class AccountScreen {
       name: name.split(" ").first,
       lastName: name.split(" ").length > 1 ? name.split(" ").last : "",
       balance: balance,
+      accountType: '',
     );
     await _accountService.addAccount(newAccount);
   }
