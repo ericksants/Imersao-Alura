@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:http/http.dart';
 import 'package:uuid/uuid.dart';
 import 'package:main/models/account.dart';
@@ -73,11 +74,12 @@ class AccountScreen {
     try {
       List<Account> listAccounts = await _accountService.getAll();
       print(listAccounts);
-    } on ClientException catch (e) {
-      print("Não foi possivel conectar ao servidor.");
-      print("Tente novamente mais tarde.");
-      print(e.message);
-      print(e.uri);
+    } on FormatException catch (e) {
+      print("O formato dos dados recebidos não é válido: ${e.message}");
+    } on TimeoutException catch (e) {
+      print(
+        "A tentativa de conexão com o servidor de autenticação excedeu o tempo limite: ${e.message}",
+      );
     } on Exception {
       print("Erro ao obter contas.");
       print("Tente novamente mais tarde.");
