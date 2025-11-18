@@ -31,9 +31,19 @@ void main() {
     accountType: 'Brigadeiro',
   );
 
-  print('Ambrosia tax (6000): ${calculateTaxesByAccount(aAmb, 6000)}');
-  print('Canjica tax (6000): ${calculateTaxesByAccount(aCan, 6000)}');
-  print('Pudim tax (6000): ${calculateTaxesByAccount(aPud, 6000)}');
-  print('Brigadeiro tax (6000): ${calculateTaxesByAccount(aBrg, 6000)}');
-  print('Below threshold (5000): ${calculateTaxesByAccount(aAmb, 5000)}');
+  print(
+    'Ambrosia tax (6000): ${calculateTaxesByAccount(senderAccount: aAmb, amount: 6000)}',
+  );
+  print(
+    'Canjica tax (6000): ${calculateTaxesByAccount(senderAccount: aCan, amount: 6000)}',
+  );
+  print(
+    'Pudim tax (6000): ${calculateTaxesByAccount(senderAccount: aPud, amount: 6000)}',
+  );
+  print(
+    'Brigadeiro tax (6000): ${calculateTaxesByAccount(senderAccount: aBrg, amount: 6000)}',
+  );
+  print(
+    'Below threshold (5000): ${calculateTaxesByAccount(senderAccount: aAmb, amount: 5000)}',
+  );
 }

@@ -10,10 +10,13 @@ import 'package:main/models/account.dart';
 ///   - Canjica: 0.33% (0.0033)
 ///   - Pudim: 0.25% (0.0025)
 ///   - Brigadeiro: 0.01% (0.0001)
-double calculateTaxesByAccount(Account account, double amount) {
+double calculateTaxesByAccount({
+  required Account senderAccount,
+  required double amount,
+}) {
   if (amount <= 5000) return 0.0;
 
-  final type = account.accountType.toLowerCase().trim();
+  final type = senderAccount.accountType.toLowerCase().trim();
   double rate;
 
   switch (type) {
