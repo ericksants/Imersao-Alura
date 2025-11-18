@@ -12,8 +12,8 @@ class Account {
     required this.name,
     required this.lastName,
     required this.balance,
-    String? accountType,
-  }) : accountType = accountType ?? '';
+    this.accountType = '',
+  });
 
   factory Account.fromMap(Map<String, dynamic> map) {
     return Account(
@@ -21,7 +21,9 @@ class Account {
       name: map['name'] as String,
       lastName: map['lastName'] as String,
       balance: (map['balance'] as num).toDouble(),
-      accountType: map['accountType'] as String? ?? '',
+      accountType: (map['accountType'] != null)
+          ? map['accountType'] as String
+          : '',
     );
   }
 
@@ -68,11 +70,16 @@ class Account {
     return other.id == id &&
         other.name == name &&
         other.lastName == lastName &&
-        other.balance == balance;
+        other.balance == balance &&
+        other.accountType == accountType;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^ name.hashCode ^ lastName.hashCode ^ balance.hashCode;
+    return id.hashCode ^
+        name.hashCode ^
+        lastName.hashCode ^
+        balance.hashCode ^
+        accountType.hashCode;
   }
 }

@@ -8,8 +8,7 @@ class AccountService {
   final StreamController<String> _streamController = StreamController<String>();
   Stream<String> get streamInfos => _streamController.stream;
 
-  String url =
-      'https://api.github.com.br/gists/56161ef65fa6d4852b25fa244e31bddf';
+  String url = 'https://api.github.com/gists/56161ef65fa6d4852b25fa244e31bddf';
 
   Future<List<Account>> getAll() async {
     Response response = await get(Uri.parse(url));
@@ -48,6 +47,16 @@ class AccountService {
     List<Account> listAccounts = await getAll();
     listAccounts.add(account);
 
+    // delega a persistência para o método save
+    await save(listAccounts, addedAccountName: account.name);
+  }
+
+  /// Persiste a lista de contas no Gist (serializa e faz o POST).
+  /// Recebe opcionalmente o nome da conta adicionada para mensagens no stream.
+  Future<void> save(
+    List<Account> listAccounts, {
+    String? addedAccountName,
+  }) async {
     List<Map<String, dynamic>> listContent = [];
     for (Account account in listAccounts) {
       listContent.add(account.toMap());
@@ -69,11 +78,11 @@ class AccountService {
 
     if (response.statusCode.toString()[0] == "2") {
       _streamController.add(
-        "${DateTime.now()} | Requisição adição bem sucedida (${account.name}).",
+        "${DateTime.now()} | Requisição adição bem sucedida (${addedAccountName ?? ''}).",
       );
     } else {
       _streamController.add(
-        "${DateTime.now()} | Requisição falhou (${account.name}).",
+        "${DateTime.now()} | Requisição falhou (${addedAccountName ?? ''}).",
       );
     }
   }
