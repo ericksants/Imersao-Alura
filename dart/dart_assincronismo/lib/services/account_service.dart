@@ -21,7 +21,7 @@ class AccountService {
 
     List<Account> listAccounts = [];
 
-    for (var dyn in listDynamic) {
+    for (dynamic dyn in listDynamic) {
       Map<String, dynamic> mapAccount = dyn as Map<String, dynamic>;
       Account account = Account.fromMap(mapAccount);
       listAccounts.add(account);
@@ -48,15 +48,12 @@ class AccountService {
     listAccounts.add(account);
 
     // delega a persistência para o método save
-    await save(listAccounts, addedAccountName: account.name);
+    await save(listAccounts, accountName: account.name);
   }
 
   /// Persiste a lista de contas no Gist (serializa e faz o POST).
   /// Recebe opcionalmente o nome da conta adicionada para mensagens no stream.
-  Future<void> save(
-    List<Account> listAccounts, {
-    String? addedAccountName,
-  }) async {
+  save(List<Account> listAccounts, {String accountName = ""}) async {
     List<Map<String, dynamic>> listContent = [];
     for (Account account in listAccounts) {
       listContent.add(account.toMap());
@@ -78,11 +75,11 @@ class AccountService {
 
     if (response.statusCode.toString()[0] == "2") {
       _streamController.add(
-        "${DateTime.now()} | Requisição adição bem sucedida (${addedAccountName ?? ''}).",
+        "${DateTime.now()} | Requisição adição bem sucedida ($accountName).",
       );
     } else {
       _streamController.add(
-        "${DateTime.now()} | Requisição falhou (${addedAccountName ?? ''}).",
+        "${DateTime.now()} | Requisição falhou ($accountName).",
       );
     }
   }

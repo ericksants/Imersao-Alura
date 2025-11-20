@@ -5,14 +5,14 @@ class Account {
   String name;
   String lastName;
   double balance;
-  String accountType;
+  String? accountType;
 
   Account({
     required this.id,
     required this.name,
     required this.lastName,
     required this.balance,
-    this.accountType = '',
+    required this.accountType,
   });
 
   factory Account.fromMap(Map<String, dynamic> map) {
@@ -20,10 +20,9 @@ class Account {
       id: map['id'] as String,
       name: map['name'] as String,
       lastName: map['lastName'] as String,
-      balance: (map['balance'] as num).toDouble(),
-      accountType: (map['accountType'] != null)
-          ? map['accountType'] as String
-          : '',
+      balance: map['balance'] as double,
+      accountType:
+          (map['accountType'] != null) ? map['accountType'] as String : null,
     );
   }
 
@@ -70,16 +69,11 @@ class Account {
     return other.id == id &&
         other.name == name &&
         other.lastName == lastName &&
-        other.balance == balance &&
-        other.accountType == accountType;
+        other.balance == balance;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        name.hashCode ^
-        lastName.hashCode ^
-        balance.hashCode ^
-        accountType.hashCode;
+    return id.hashCode ^ name.hashCode ^ lastName.hashCode ^ balance.hashCode;
   }
 }

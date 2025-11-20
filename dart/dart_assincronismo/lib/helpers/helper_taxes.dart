@@ -1,40 +1,22 @@
 import 'package:main/models/account.dart';
 
-/// Calcula as taxas aplicáveis para uma transação de `amount` feita pela
-/// conta `account`.
-///
-/// Regras:
-/// - Retorna 0.0 se `amount` for menor ou igual a 5000.
-/// - Para valores acima de 5000, aplica a taxa conforme o `account.accountType`:
-///   - Ambrosia: 0.5% (0.005)
-///   - Canjica: 0.33% (0.0033)
-///   - Pudim: 0.25% (0.0025)
-///   - Brigadeiro: 0.01% (0.0001)
 double calculateTaxesByAccount({
-  required Account senderAccount,
+  required Account sender,
   required double amount,
 }) {
-  if (amount <= 5000) return 0.0;
+  if (amount < 5000) return 0;
 
-  final type = senderAccount.accountType.toLowerCase().trim();
-  double rate;
-
-  switch (type) {
-    case 'ambrosia':
-      rate = 0.005; // 0.5%
-      break;
-    case 'canjica':
-      rate = 0.0033; // 0.33%
-      break;
-    case 'pudim':
-      rate = 0.0025; // 0.25%
-      break;
-    case 'brigadeiro':
-      rate = 0.0001; // 0.01%
-      break;
-    default:
-      rate = 0.0; // tipo desconhecido: sem taxa
+  if (sender.accountType != null) {
+    if (sender.accountType!.toUpperCase() == "AMBROSIA") {
+      return amount * 0.005;
+    } else if (sender.accountType!.toUpperCase() == "CANJICA") {
+      return amount * 0.0033;
+    } else if (sender.accountType!.toUpperCase() == "PUDIM") {
+      return amount * 0.0025;
+    } else {
+      return amount * 0.0001; // É BRIGADEIRO
+    }
+  } else {
+    return 0.1;
   }
-
-  return amount * rate;
 }

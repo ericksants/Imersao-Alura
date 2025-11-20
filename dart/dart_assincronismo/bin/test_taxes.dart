@@ -32,18 +32,18 @@ void main() {
   );
 
   print(
-    'Ambrosia tax (6000): ${calculateTaxesByAccount(senderAccount: aAmb, amount: 6000)}',
+    'Ambrosia tax (6000): ${calculateTaxesByAccount(sender: aAmb, amount: 6000)}',
   );
   print(
-    'Canjica tax (6000): ${calculateTaxesByAccount(senderAccount: aCan, amount: 6000)}',
+    'Canjica tax (6000): ${calculateTaxesByAccount(sender: aCan, amount: 6000)}',
   );
   print(
-    'Pudim tax (6000): ${calculateTaxesByAccount(senderAccount: aPud, amount: 6000)}',
+    'Pudim tax (6000): ${calculateTaxesByAccount(sender: aPud, amount: 6000)}',
   );
   print(
-    'Brigadeiro tax (6000): ${calculateTaxesByAccount(senderAccount: aBrg, amount: 6000)}',
+    'Brigadeiro tax (6000): ${calculateTaxesByAccount(sender: aBrg, amount: 6000)}',
   );
   print(
-    'Below threshold (5000): ${calculateTaxesByAccount(senderAccount: aAmb, amount: 5000)}',
+    'Below threshold (5000): ${calculateTaxesByAccount(sender: aAmb, amount: 5000)}',
   );
 }
