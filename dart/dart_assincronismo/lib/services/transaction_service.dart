@@ -77,9 +77,23 @@ class TransactionService {
     Response response = await get(Uri.parse(url));
 
     Map<String, dynamic> mapResponse = json.decode(response.body);
-    List<dynamic> listDynamic = json.decode(
-      mapResponse["files"]["transactions.json"]["content"],
-    );
+    // Protege caso o Gist não contenha o arquivo `transactions.json`.
+    if (mapResponse['files'] == null || mapResponse['files']['transactions.json'] == null) {
+      return <Transaction>[];
+    }
+
+    final content = mapResponse['files']['transactions.json']['content'];
+    if (content == null || (content is String && content.trim().isEmpty)) {
+      return <Transaction>[];
+    }
+
+    List<dynamic> listDynamic;
+    try {
+      listDynamic = json.decode(content) as List<dynamic>;
+    } catch (e) {
+      // conteúdo inválido -> retorne lista vazia para não quebrar o fluxo
+      return <Transaction>[];
+    }
 
     List<Transaction> listTransactions = [];
 

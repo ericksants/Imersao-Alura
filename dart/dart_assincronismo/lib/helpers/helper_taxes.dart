@@ -4,19 +4,15 @@ double calculateTaxesByAccount({
   required Account sender,
   required double amount,
 }) {
-  if (amount < 5000) return 0;
+  // Regra: apenas valores estritamente maiores que 5000 têm taxa
+  if (amount <= 5000) return 0.0;
 
-  if (sender.accountType != null) {
-    if (sender.accountType!.toUpperCase() == "AMBROSIA") {
-      return amount * 0.005;
-    } else if (sender.accountType!.toUpperCase() == "CANJICA") {
-      return amount * 0.0033;
-    } else if (sender.accountType!.toUpperCase() == "PUDIM") {
-      return amount * 0.0025;
-    } else {
-      return amount * 0.0001; // É BRIGADEIRO
-    }
-  } else {
-    return 0.1;
-  }
+  final type = (sender.accountType ?? '').toLowerCase().trim();
+  if (type == 'ambrosia') return amount * 0.005;
+  if (type == 'canjica') return amount * 0.0033;
+  if (type == 'pudim') return amount * 0.0025;
+  if (type == 'brigadeiro') return amount * 0.0001;
+
+  // tipo desconhecido: sem taxa
+  return 0.0;
 }

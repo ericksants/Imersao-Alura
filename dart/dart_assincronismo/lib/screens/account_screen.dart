@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:main/models/account.dart';
 import 'package:main/services/account_service.dart';
+import 'package:main/services/transaction_service.dart';
+import 'package:main/exceptions/transaction_exceptions.dart';
 
 class AccountScreen {
   final AccountService _accountService = AccountService();
@@ -22,8 +24,10 @@ class AccountScreen {
       print("Como eu posso ajudar você hoje? (digite o número desejado)");
       print("1 - Ver todas as contas");
       print("2 - Adicionar nova conta");
-      print("3 - Buscar por nome\n");
-      print("4 - Sair");
+      print("3 - Buscar por nome");
+      print("4 - Executar transação");
+      print("5 - Ver histórico de transações");
+      print("6 - Sair");
 
       String? input = stdin.readLineSync();
 
@@ -54,6 +58,16 @@ class AccountScreen {
               break;
             }
           case "4":
+            {
+              await _makeTransactionFlow();
+              break;
+            }
+          case "5":
+            {
+              await _showTransactions();
+              break;
+            }
+          case "6":
             {
               isRunning = false;
               print("Encerrando o chatbot. Até mais!");
@@ -114,5 +128,60 @@ class AccountScreen {
       accountType: '',
     );
     await _accountService.addAccount(newAccount);
+  }
+
+  Future<void> _makeTransactionFlow() async {
+    final txService = TransactionService();
+    try {
+      print("Digite o id do remetente:");
+      final idSender = stdin.readLineSync();
+      if (idSender == null || idSender.trim().isEmpty) {
+        print("Id do remetente inválido. Abortando transação.");
+        return;
+      }
+
+      print("Digite o id do destinatário:");
+      final idReceiver = stdin.readLineSync();
+      if (idReceiver == null || idReceiver.trim().isEmpty) {
+        print("Id do destinatário inválido. Abortando transação.");
+        return;
+      }
+
+      print("Digite o valor a ser transferido:");
+      final amountStr = stdin.readLineSync();
+      final amount = amountStr != null ? double.tryParse(amountStr) : null;
+      if (amount == null || amount <= 0) {
+        print("Valor inválido. Abortando transação.");
+        return;
+      }
+
+      await txService.makeTransaction(idSender: idSender, idReceiver: idReceiver, amount: amount);
+      print("Transação concluída com sucesso.");
+    } on SenderNotExistsException catch (e) {
+      print("Erro: remetente não encontrado. ${e.message}");
+    } on ReceiverNotExistsException catch (e) {
+      print("Erro: destinatário não encontrado. ${e.message}");
+    } on InsufficientBalanceException catch (e) {
+      print("Saldo insuficiente. Saldo atual: ${e.cause.balance}, necessário: ${e.amount + e.taxes} (taxas: ${e.taxes})");
+    } catch (e) {
+      print("Erro ao executar a transação: $e");
+    }
+  }
+
+  Future<void> _showTransactions() async {
+    final txService = TransactionService();
+    try {
+      final list = await txService.getAll();
+      if (list.isEmpty) {
+        print("Nenhuma transação registrada.");
+        return;
+      }
+      print("Histórico de transações (${list.length}):");
+      for (var t in list) {
+        print(t);
+      }
+    } catch (e) {
+      print("Erro ao obter histórico de transações: $e");
+    }
   }
 }
