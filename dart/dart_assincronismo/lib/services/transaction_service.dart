@@ -7,6 +7,7 @@ import 'package:main/models/account.dart';
 import 'package:main/models/transaction.dart';
 import 'package:main/helpers/helper_taxes.dart';
 import 'package:main/services/account_service.dart';
+import 'package:main/exceptions/transaction_exceptions.dart';
 
 class TransactionService {
   final AccountService _accountService = AccountService();
@@ -20,7 +21,7 @@ class TransactionService {
     List<Account> listAccounts = await _accountService.getAll();
 
     if (listAccounts.where((acc) => acc.id == idSender).isEmpty) {
-      return null;
+      throw SenderNotExistsException();
     }
 
     Account senderAccount = listAccounts.firstWhere(
@@ -28,7 +29,7 @@ class TransactionService {
     );
 
     if (listAccounts.where((acc) => acc.id == idReceiver).isEmpty) {
-      return null;
+      throw ReceiverNotExistsException();
     }
 
     Account receiverAccount = listAccounts.firstWhere(
@@ -41,7 +42,11 @@ class TransactionService {
     );
 
     if (senderAccount.balance < amount + taxes) {
-      return null;
+      throw InsufficientBalanceException(
+        cause: senderAccount,
+        amount: amount,
+        taxes: taxes,
+      );
     }
 
     senderAccount.balance -= (amount + taxes);
